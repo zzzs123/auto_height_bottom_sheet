@@ -2,6 +2,12 @@
 
 一个 Flutter 底部弹窗（Bottom Sheet）组件，高度随内容与键盘自适应，并避免官方 `showModalBottomSheet` 带来的多余重建。
 
+![Demo](https://github.com/user-attachments/assets/b52279ba-fb63-48a6-8a4f-55531fd56c38)
+
+
+![showModalBottomSheet rebuild](https://github.com/user-attachments/assets/712890f1-8356-4be4-8853-615acae58be0)
+
+
 ## 功能特点
 
 ### 1. 高度随内容自适应
