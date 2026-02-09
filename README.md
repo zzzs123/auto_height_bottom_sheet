@@ -6,8 +6,10 @@
 
 A Flutter bottom sheet widget whose height adapts to content and keyboard, and which avoids the extra rebuilds that can occur with `showModalBottomSheet`.
 
+### showAutoHeightBottomSheet
 ![demo](https://github.com/user-attachments/assets/d94daa2c-8ee6-478a-b6a2-0c0af7a7d00a)
 
+### might rebuild lots of times while using showModalBottomSheet
 ![showModalBottomSheet rebuild](https://github.com/user-attachments/assets/918ad0fb-b644-4b2d-b2bc-25bf3ad229f8)
 
 ## Features
