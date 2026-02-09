@@ -1,6 +1,6 @@
 name: auto_height_bottom_sheet
 description: "A modal bottom sheet that height adapts to content and keyboard doesn't cover inputs"
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/zzzs123/auto_height_bottom_sheet
 
 environment:

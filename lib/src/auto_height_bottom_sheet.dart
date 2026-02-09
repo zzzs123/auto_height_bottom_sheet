@@ -84,7 +84,16 @@ Future<T?> showAutoHeightBottomSheet<T>({
   );
 }
 
+/// A bottom sheet content widget whose height adapts to its content.
+///
+/// Use either [scrollableChild] or [children] for the middle content (not both).
+/// [header] and [footer] are persistent and do not scroll. Prefer
+/// [SingleChildScrollView] or [ListView] with [mainAxisSize: MainAxisSize.min] or [shrinkWrap: true] inside
+/// [scrollableChild] so the keyboard does not cover inputs.
 class AutoHeightSheet extends StatelessWidget {
+  /// Creates an [AutoHeightSheet].
+  ///
+  /// Exactly one of [scrollableChild] or [children] must be non-null.
   const AutoHeightSheet({
     super.key,
     this.topMargin,
@@ -95,15 +104,33 @@ class AutoHeightSheet extends StatelessWidget {
     this.footer,
     this.isDismissible = true,
   }) : assert(
-         (scrollableChild != null) != (children != null),
-         'Must have exactly one of scrollableChild or children.',
-       );
+          (scrollableChild != null) != (children != null),
+          'Must have exactly one of scrollableChild or children.',
+        );
+
+  /// Empty space above the sheet content.
+  /// Defaults to [kToolbarHeight] when null.
   final double? topMargin;
+
+  /// Background color of the sheet. Falls back to theme when null.
   final Color? backgroundColor;
+
+  /// Persistent header shown at the top (e.g. AppBar). Does not scroll.
   final Widget? header;
+
+  /// The scrollable middle section. Use with [SingleChildScrollView] or
+  /// [ListView] with [mainAxisSize: MainAxisSize.min] or [shrinkWrap: true] for best keyboard behavior.
+  /// Must not be set when [children] is set.
   final Widget? scrollableChild;
+
+  /// The middle content as a list of widgets (like [ListView] children).
+  /// Must not be set when [scrollableChild] is set.
   final List<Widget>? children;
+
+  /// Persistent footer shown at the bottom. Does not scroll.
   final Widget? footer;
+
+  /// Whether tapping outside the sheet closes it. Defaults to true.
   final bool isDismissible;
 
   @override
@@ -157,14 +184,6 @@ class AutoHeightSheet extends StatelessWidget {
               ),
             if (footer != null)
               _BackgroundWrapper(color: backgroundColor, child: footer!),
-            // Flexible(
-            //   child: Material(
-            //     color: backgroundColor,
-            //     shape: shape,
-            //     clipBehavior: clipBehavior,
-            //     child: ListView(shrinkWrap: true, children: children),
-            //   ),
-            // ),
           ],
         ),
       ),
@@ -221,7 +240,7 @@ class _BottomSheet extends StatefulWidget {
   final void Function(DragStartDetails details)? onDragStart;
 
   final void Function(DragEndDetails details, {required bool isClosing})?
-  onDragEnd;
+      onDragEnd;
 
   @override
   State<_BottomSheet> createState() => _BottomSheetState();
@@ -358,9 +377,9 @@ class _RenderBottomSheetLayoutWithSizeListener extends RenderShiftedBox {
     RenderBox? child,
     required ValueChanged<Size> onChildSizeChanged,
     required double animationValue,
-  }) : _onChildSizeChanged = onChildSizeChanged,
-       _animationValue = animationValue,
-       super(child);
+  })  : _onChildSizeChanged = onChildSizeChanged,
+        _animationValue = animationValue,
+        super(child);
 
   Size _lastSize = Size.zero;
 
@@ -449,9 +468,8 @@ class _RenderBottomSheetLayoutWithSizeListener extends RenderShiftedBox {
     assert(childConstraints.debugAssertIsValid(isAppliedConstraint: true));
     child.layout(childConstraints, parentUsesSize: !childConstraints.isTight);
     final BoxParentData childParentData = child.parentData! as BoxParentData;
-    final Size childSize = childConstraints.isTight
-        ? childConstraints.smallest
-        : child.size;
+    final Size childSize =
+        childConstraints.isTight ? childConstraints.smallest : child.size;
     childParentData.offset = _getPositionForChild(size, childSize);
 
     if (_lastSize != childSize) {
@@ -491,11 +509,7 @@ class _ModalBottomSheetState<T> extends State<_ModalBottomSheet<T>> {
       case TargetPlatform.iOS:
       case TargetPlatform.macOS:
         return '';
-      case TargetPlatform.android:
-      case TargetPlatform.fuchsia:
-      case TargetPlatform.linux:
-      case TargetPlatform.windows:
-      case TargetPlatform.ohos:
+      default:
         return localizations.dialogLabel;
     }
   }
@@ -804,13 +818,11 @@ class _ModalBottomSheetRoute<T> extends PopupRoute<T> {
               : const BottomSheetThemeData();
           return _ModalBottomSheet<T>(
             route: this,
-            backgroundColor:
-                backgroundColor ??
+            backgroundColor: backgroundColor ??
                 sheetTheme.modalBackgroundColor ??
                 sheetTheme.backgroundColor ??
                 defaults.backgroundColor,
-            elevation:
-                elevation ??
+            elevation: elevation ??
                 sheetTheme.modalElevation ??
                 sheetTheme.elevation ??
                 defaults.modalElevation,
@@ -884,15 +896,15 @@ class _BottomSheetGestureDetector extends StatelessWidget {
       gestures: <Type, GestureRecognizerFactory<GestureRecognizer>>{
         VerticalDragGestureRecognizer:
             GestureRecognizerFactoryWithHandlers<VerticalDragGestureRecognizer>(
-              () => VerticalDragGestureRecognizer(debugOwner: this),
-              (VerticalDragGestureRecognizer instance) {
-                instance
-                  ..onStart = onVerticalDragStart
-                  ..onUpdate = onVerticalDragUpdate
-                  ..onEnd = onVerticalDragEnd
-                  ..onlyAcceptDragOnThreshold = true;
-              },
-            ),
+          () => VerticalDragGestureRecognizer(debugOwner: this),
+          (VerticalDragGestureRecognizer instance) {
+            instance
+              ..onStart = onVerticalDragStart
+              ..onUpdate = onVerticalDragUpdate
+              ..onEnd = onVerticalDragEnd
+              ..onlyAcceptDragOnThreshold = true;
+          },
+        ),
       },
       child: child,
     );
@@ -909,12 +921,13 @@ class _BottomSheetGestureDetector extends StatelessWidget {
 // dart format off
 class _BottomSheetDefaultsM3 extends BottomSheetThemeData {
   _BottomSheetDefaultsM3(this.context)
-    : super(
-      elevation: 1.0,
-      modalElevation: 1.0,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28.0))),
-      constraints: const BoxConstraints(maxWidth: 640),
-    );
+      : super(
+          elevation: 1.0,
+          modalElevation: 1.0,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(28.0))),
+          constraints: const BoxConstraints(maxWidth: 640),
+        );
 
   final BuildContext context;
   late final ColorScheme _colors = Theme.of(context).colorScheme;
